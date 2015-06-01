@@ -45,7 +45,7 @@ def makeArrayForRegion(regionCoord):
         cellsize = int(f.readline()[9:])
         
         for i in range(nrows):
-            newRow = [int(float(k)) for k in f.readline().split()]
+            newRow = [int((float(k)+100)*50) for k in f.readline().split()]
             output.append(newRow)
             newRow = []
 
@@ -104,6 +104,24 @@ def createDataArray(regionsNeeded):
     
     return regions
 
+def refineDataArray(dataArray, xll, yll, width):
+    ## the ll coord of the whole input square
+    squareXll = xll/REGION_WIDTH * REGION_WIDTH
+    squareYll = yll/REGION_WIDTH * REGION_WIDTH
+    ## the ll coord of the desired region in terms of number of elements
+    xStart = (xll-squareXll)/ELEMENT_WIDTH
+    yStart = (yll-squareYll)/ELEMENT_WIDTH
+    ## length of side of desired region in terms of number of elements
+    length = width/ELEMENT_WIDTH
+    output = []
+    i = yStart
+    while i < yStart+length:
+        newRow = dataArray[i][xStart:xStart+length]
+        output.append(newRow)
+        i+=1
+        
+    return output
+
 def main():
     ##get the region that needs to be created
     xll = 400000
@@ -115,6 +133,18 @@ def main():
   
     ## build the 2d array of all squraes where the requested data exists
     dataArray = createDataArray(regionsNeeded)
+
+##    f = open('output.png', 'wb') 
+##    w = png.Writer(len(dataArray), len(dataArray), greyscale=True, bitdepth=16)
+##    w.write(f, dataArray)
+##    f.close()
     
+    ## refine array to just data included in the request
+    dataArray = refineDataArray(dataArray, xll, yll, width)
+
+##    f = open('output2.png', 'wb') 
+##    w = png.Writer(len(dataArray), len(dataArray), greyscale=True, bitdepth=16)
+##    w.write(f, dataArray)
+##    f.close()
 
 main()
