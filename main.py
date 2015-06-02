@@ -45,7 +45,7 @@ def makeArrayForRegion(regionCoord):
         cellsize = int(f.readline()[9:])
         
         for i in range(nrows):
-            newRow = [int((float(k)+100)*50) for k in f.readline().split()]
+            newRow = [int(round((float(k)+100)*50)) for k in f.readline().split()]
             output.append(newRow)
             newRow = []
 
@@ -133,42 +133,66 @@ def advancedIndex(array,index):
     difference = array[right]-array[left]
     return array[left] + difference*fraction
 
-## lengthens the given array using value estimation
+## lengthens the given 1D array using value estimation
 def lengthenArray(arrayIn, outputLength):
-    step = (len(before)-1)/float(outputLength-1)
+    step = (len(arrayIn)-1)/float(outputLength-1)
     output = []
     k = 0
     for i in range(outputLength):
         output.append(k)
         k += step
-    print output
     for i in range(len(output)):
         output[i] = int(round(advancedIndex(arrayIn,output[i])))
+    return output
+
+## transposes 2D array
+def transpose(array):
+    output = []
+    for i in range(len(array[0])):
+        newRow = []
+        for j in range(len(array)):
+            newRow.append(array[j][i])
+        output.append(newRow)
+    return output
+
+def resizeArray(array, width):
+    temp = transpose(array)
+    temp2 = []
+    output = []
+    for col in temp:
+        temp2.append(lengthenArray(col,width))
+    temp2 = transpose(temp2)
+    for row in temp2:
+        output.append(lengthenArray(row,width))
     return output
 
 def main():
     ##get the region that needs to be created
     xll = 400000
     yll = 200000
-    width = 30000
+    width = 10000
+
+    desiredSize = 400
 
     ## build list of coordinates where the data lies
     regionsNeeded = findRegions(xll,yll,width)
   
     ## build the 2d array of all squraes where the requested data exists
     dataArray = createDataArray(regionsNeeded)
-
-##    f = open('output.png', 'wb') 
-##    w = png.Writer(len(dataArray), len(dataArray), greyscale=True, bitdepth=16)
-##    w.write(f, dataArray)
-##    f.close()
     
     ## refine array to just data included in the request
     dataArray = refineDataArray(dataArray, xll, yll, width)
 
-##    f = open('output2.png', 'wb') 
-##    w = png.Writer(len(dataArray), len(dataArray), greyscale=True, bitdepth=16)
-##    w.write(f, dataArray)
-##    f.close()
+    ## resize the array to the output size
+    dataArray = resizeArray(dataArray,desiredSize)
+
+    
+
+    ## print the png
+    f = open('output.png', 'wb') 
+    w = png.Writer(desiredSize, desiredSize, greyscale=True, bitdepth=16)
+    w.write(f, dataArray)
+    f.close()    
+
 
 main()
