@@ -45,7 +45,7 @@ def makeArrayForRegion(regionCoord):
         cellsize = int(f.readline()[9:])
         
         for i in range(nrows):
-            newRow = [int(round((float(k)+100)*50)) for k in f.readline().split()]
+            newRow = [int(round(float(k))) for k in f.readline().split()]
             output.append(newRow)
             newRow = []
 
@@ -190,7 +190,7 @@ def main():
     ##get the region that needs to be created
     xll = 400000
     yll = 200000
-    width = 10000
+    width = 18000
 
     desiredSize = 1081
 
