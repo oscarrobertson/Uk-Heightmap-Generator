@@ -122,6 +122,30 @@ def refineDataArray(dataArray, xll, yll, width):
         
     return output
 
+## takes an array and a float index
+## returns float vaule of linear estimation of index
+def advancedIndex(array,index):
+    left = int(index)
+    right = left + 1
+    fraction = index - left
+    if right == len(array):
+        return array[left]
+    difference = array[right]-array[left]
+    return array[left] + difference*fraction
+
+## lengthens the given array using value estimation
+def lengthenArray(arrayIn, outputLength):
+    step = (len(before)-1)/float(outputLength-1)
+    output = []
+    k = 0
+    for i in range(outputLength):
+        output.append(k)
+        k += step
+    print output
+    for i in range(len(output)):
+        output[i] = int(round(advancedIndex(arrayIn,output[i])))
+    return output
+
 def main():
     ##get the region that needs to be created
     xll = 400000
