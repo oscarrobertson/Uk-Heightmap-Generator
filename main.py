@@ -155,6 +155,7 @@ def transpose(array):
         output.append(newRow)
     return output
 
+## makes an array bigger
 def resizeArray(array, width):
     temp = transpose(array)
     temp2 = []
@@ -166,13 +167,32 @@ def resizeArray(array, width):
         output.append(lengthenArray(row,width))
     return output
 
+## funcion to apply full contrast to a store array
+def applyContrast(data):
+    maximum = 0
+    minimum = 2**16
+    for row in data:
+        a = max(row)
+        b = min(row)
+        if a > maximum:
+            maximum = a
+        if b < minimum:
+            minimum = b
+    print minimum,maximum
+    factor = (2**16-1)/(maximum-minimum)
+    output = []
+    for row in data:
+        newRow = [int(round((x-minimum)*factor)) for x in row]
+        output.append(newRow)
+    return output
+
 def main():
     ##get the region that needs to be created
     xll = 400000
     yll = 200000
     width = 10000
 
-    desiredSize = 400
+    desiredSize = 1081
 
     ## build list of coordinates where the data lies
     regionsNeeded = findRegions(xll,yll,width)
@@ -186,7 +206,8 @@ def main():
     ## resize the array to the output size
     dataArray = resizeArray(dataArray,desiredSize)
 
-    
+    ## apply contrast
+    dataArray = applyContrast(dataArray)
 
     ## print the png
     f = open('output.png', 'wb') 
