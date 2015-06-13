@@ -167,8 +167,8 @@ def resizeArray(array, width):
         output.append(lengthenArray(row,width))
     return output
 
-## funcion to apply full contrast to a store array
-def applyContrast(data):
+## find max and min points of data set
+def findMinMax(data):
     maximum = 0
     minimum = 2**16
     for row in data:
@@ -178,7 +178,21 @@ def applyContrast(data):
             maximum = a
         if b < minimum:
             minimum = b
-    print minimum,maximum
+    return [minimum,maximum]
+
+## funcion to apply full contrast to a store array
+def applyFullContrast(data):
+    minMax = findMinMax(data)
+    return applyContrast(data,minMax[0],minMax[1])
+
+## applies full contrast over dataset using max and min from the whole country
+def applyOverallContrast(data):
+    return applyContrast(data,-120,1345)
+
+## this function applies contrast to the given dataset given the min and max values
+## it will turn the minimum you give into zero and the maximum into (2**16)-1
+## points inbetween will be scaled linearly
+def applyContrast(data,minimum,maximum):
     factor = (2**16-1)/(maximum-minimum)
     output = []
     for row in data:
@@ -187,13 +201,22 @@ def applyContrast(data):
     return output
 
 def main():
-    ##get the region that needs to be created
+    ## location data to input 
     xll = 536527
     yll = 177893
     width = 18000
-
     desiredSize = 1081
 
+    ## contrast setting:
+    ## 0 - Maximum contrast
+    ## 1 - Maximum contrast over country
+    ## 2 - Manual contrast, make sure you set the manualMax and manualMin values
+    contrastSetting = 0
+
+    ## ignore unless you set contrast setting to 2
+    manualMin = -200
+    manualMax = 2000
+    
     ## build list of coordinates where the data lies
     regionsNeeded = findRegions(xll,yll,width)
   
@@ -207,7 +230,12 @@ def main():
     dataArray = resizeArray(dataArray,desiredSize)
 
     ## apply contrast
-    dataArray = applyContrast(dataArray)
+    if contrastSetting == 0:
+        dataArray = applyFullContrast(dataArray)
+    elif contrastSetting == 1:
+        dataArray = applyOverallContrast(dataArray)
+    else:
+        dataArray = applyContrast(dataArray,manualMin,manualMax)
 
     ## print the png
     f = open('output.png', 'wb') 
