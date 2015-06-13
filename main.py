@@ -37,17 +37,34 @@ def makeArrayForRegion(regionCoord):
     output = []
     filename = makeFilename(regionCoord[0],regionCoord[1])
 
-    with open(filename,'r') as f:
-        ncols = int(f.readline()[6:])
-        nrows = int(f.readline()[6:])
-        xllcorner = int(f.readline()[10:])
-        yllcorner = int(f.readline()[10:])
-        cellsize = int(f.readline()[9:])
-        
-        for i in range(nrows):
-            newRow = [int(round(float(k))) for k in f.readline().split()]
-            output.append(newRow)
-            newRow = []
+    try:
+        with open(filename,'r') as f:
+            ncols = int(f.readline()[6:])
+            nrows = int(f.readline()[6:])
+            xllcorner = int(f.readline()[10:])
+            yllcorner = int(f.readline()[10:])
+            cellsize = int(f.readline()[9:])
+            
+            for i in range(nrows):
+                newRow = [int(round(float(k))) for k in f.readline().split()]
+                output.append(newRow)
+                newRow = []
+    ## if the file does not exist then use the base file
+    except:
+        baseFilename = "data\\BASE.asc"
+        with open(baseFilename,'r') as f:
+            ncols = int(f.readline()[6:])
+            nrows = int(f.readline()[6:])
+            f.readline()
+            f.readline()
+            xllcorner = regionCoord[0]
+            yllcorner = regionCoord[1]
+            cellsize = int(f.readline()[9:])
+
+            for i in range(nrows):
+                newRow = [int(round(float(k))) for k in f.readline().split()]
+                output.append(newRow)
+                newRow = []
 
     return output
 
@@ -202,10 +219,10 @@ def applyContrast(data,minimum,maximum):
 
 def main():
     ## location data to input 
-    xll = 536527
-    yll = 177893
-    width = 18000
-    desiredSize = 1081
+    xll = 0
+    yll = 800000
+    width = 10000
+    desiredSize = 1000
 
     ## contrast setting:
     ## 0 - Maximum contrast
