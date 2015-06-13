@@ -188,8 +188,8 @@ def applyContrast(data):
 
 def main():
     ##get the region that needs to be created
-    xll = 400000
-    yll = 200000
+    xll = 536527
+    yll = 177893
     width = 18000
 
     desiredSize = 1081
@@ -215,5 +215,6 @@ def main():
     w.write(f, dataArray)
     f.close()    
 
+    return dataArray
 
 main()
