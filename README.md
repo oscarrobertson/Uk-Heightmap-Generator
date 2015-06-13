@@ -6,6 +6,8 @@ TO USE THIS CODE IN THE CURRENT STATE:
 
 - You need to download the "data" folder and the "main.py" file. Place the file and folder in the same directory.
 - Ensure you have Python 2.7 installed
+- Install the PyPng module by following installation instructions found here https://github.com/drj11/pypng
+
 - Find the coordinates (lower left of a square) you want using a website like this http://www.gridreferencefinder.com (the X and Y co-ordinates)
 - Decide how big a square you want (measured in metres, CS uses 18km size maps generally so 18000)
 - Decide how large you want the output png to be (measured in pixels, CS uses 1081)
